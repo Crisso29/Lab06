@@ -1,0 +1,16 @@
+# Dependencias Node
+node_modules/
+
+# Logs
+npm-debug.log
+*.log
+
+# Variables de entorno (tokens sensibles)
+.env
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
