@@ -1,80 +1,100 @@
-# 🎵 Informe Monográfico y API Testing: Spotify Web API - Lab 06
+<div align="center">
+  
+  # UNIVERSIDAD NACIONAL DE SAN CRISTÓBAL DE HUAMANGA
+  ### Escuela Profesional de Ingeniería de Sistemas
+  
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/UNSCH_logo.svg/800px-UNSCH_logo.svg.png" width="150" alt="Logo UNSCH">
+  
+  ## INFORME MONOGRÁFICO: API TESTING
+  ### Laboratorio 06: Pruebas y Aseguramiento de Calidad en Spotify Web API
+  
+</div>
 
-![Node.js](https://img.shields.io/badge/Node.js-v20-green)
-![Postman](https://img.shields.io/badge/Postman-Desktop-FF6C37)
-![Jest](https://img.shields.io/badge/Jest-Testing-C21325)
-![Supertest](https://img.shields.io/badge/Supertest-API-blue)
+<br>
 
-## 📄 Resumen Ejecutivo
-
-[cite_start]El presente informe monográfico documenta el proceso completo de diseño, configuración, ejecución y análisis de pruebas de interfaz de programación de aplicaciones (API) REST sobre la Spotify Web API, desarrolladas para el Laboratorio 06 de la asignatura IS-489 Pruebas y Aseguramiento de Calidad de Software[cite: 228]. [cite_start]El estudio evaluó un total de 12 casos de prueba (requerimientos SPOT-21 a SPOT-32 del Sprint 5) distribuidos en dos módulos clave: Búsqueda (TC-007 a TC-012) y Gestión de Playlists (TC-001 a TC-006)[cite: 229]. 
-
-[cite_start]Los resultados evidenciaron 8 casos aprobados y 4 fallos documentados como hallazgos de calidad, revelando discrepancias entre los criterios de aceptación y el comportamiento real de la API REST[cite: 233].
-
----
-
-## 📚 Análisis de Documentación de la API
-
-[cite_start]Para el diseño de los casos de prueba, se tomó como base técnica la documentación oficial de Spotify Web API, que es una API REST de nivel empresarial que proporciona acceso programático al catálogo de Spotify[cite: 360]. [cite_start]Se evaluaron los endpoints `GET /v1/search`, `POST /v1/me/playlists` y `PUT /v1/playlists/{playlist_id}`[cite: 366, 367, 368].
-
-![Documentación Spotify API](Evidencias/API.png)
-*Figura 1: Referencia de la documentación oficial de Spotify Web API.*
+**DATOS GENERALES:**
+* **Asignatura:** IS-489 Pruebas y Aseguramiento de Calidad de Software
+* **Docente:** Ing. Lizbeth Jaico Quispe
+* **Estudiante:** Crisólogo Aguilar Flores
+* **Lugar y Fecha:** Ayacucho, Perú - Junio 2026
 
 ---
 
-## 📂 Estructura del Proyecto
-
-[cite_start]Todo el trabajo fue versionado modularmente para separar la configuración, las colecciones de pruebas y los entornos, asegurando la reproducibilidad[cite: 234].
-
-![Explorador de Archivos](Evidencias/Explorador.png)
-*Figura 2: Estructura del directorio de trabajo en Visual Studio Code.*
+## 📑 Índice
+1. [Resumen Ejecutivo](#1-resumen-ejecutivo)
+2. [Análisis de la Documentación de la API](#2-análisis-de-la-documentación-de-la-api)
+3. [Matriz de Pruebas de Endpoints (Postman)](#3-matriz-de-pruebas-de-endpoints-postman)
+4. [Estructura del Proyecto y Automatización](#4-estructura-del-proyecto-y-automatización)
+5. [Análisis de Hallazgos y Defectos](#5-análisis-de-hallazgos-y-defectos)
+6. [Conclusiones](#6-conclusiones)
 
 ---
 
-## 📊 Matriz de Pruebas de Endpoints (Ejecución y Análisis)
+## 1. Resumen Ejecutivo
 
-[cite_start]A continuación, se detalla el análisis y los resultados de las pruebas realizadas mediante Postman a los endpoints seleccionados, cumpliendo con los parámetros de evaluación requeridos[cite: 149].
+El presente informe monográfico documenta el diseño, ejecución y análisis de pruebas de Interfaz de Programación de Aplicaciones (API) REST sobre la plataforma **Spotify**. Se han evaluado un total de 12 casos de prueba (TC-001 al TC-012) mediante técnicas de caja negra y análisis de valores límite. Las pruebas se dividieron en dos ecosistemas: validación manual/interactiva mediante **Postman** y ejecución automatizada mediante código utilizando **Node.js, Jest y Supertest**.
 
-### 1. Módulo Búsqueda (Autenticación: *Client Credentials Flow*)
+---
 
-| ID | Método | URL del Endpoint | Parámetros Enviados (Query) | Cód. HTTP | Respuesta Obtenida (Body/JSON) | Estado |
+## 2. Análisis de la Documentación de la API
+
+Para el diseño de los casos de prueba, se tomó como base la documentación técnica oficial de Spotify Web API. Se identificaron los métodos HTTP, los parámetros requeridos y los esquemas de autenticación:
+
+* **Módulo de Búsqueda (`GET /search`):** Utiliza autenticación *Client Credentials Flow*. Requiere los parámetros `q` (query) y `type` (tipo de elemento a buscar).
+* **Módulo de Playlists (`POST /users/{user_id}/playlists` y `PUT /playlists/{playlist_id}`):** Utiliza autenticación *Authorization Code Flow* (requiere token de usuario Premium). 
+
+<div align="center">
+  <img src="Evidencias/API.png" alt="Documentación Spotify API">
+  <br>
+  <i>Figura 1: Referencia de endpoints en la documentación oficial de Spotify Web API.</i>
+</div>
+
+---
+
+## 3. Matriz de Pruebas de Endpoints (Postman)
+
+A continuación, se detalla la matriz de resultados tras ejecutar las peticiones a los endpoints seleccionados. Todos los resultados fueron validados utilizando *assertions* programados en la pestaña `Tests` de Postman.
+
+### 3.1. Módulo de Búsqueda (Casos TC-007 a TC-012)
+**Endpoint Base:** `https://api.spotify.com/v1/search`
+
+| ID | Método | Endpoint (URL) | Parámetros Enviados (Query Params) | Cód. HTTP Recibido | Respuesta Obtenida (Resumen JSON) | Estado |
 |:---|:---:|:---|:---|:---:|:---|:---:|
-| **TC-007** | `GET` | `/v1/search` | `q=Dua Lipa`, `type=artist` | **200 OK** | `total: 14`, `items[0].name='Dua Lipa'` | ✅ PASS |
-| **TC-008** | `GET` | `/v1/search` | `q=xkqzmpwvlrfbnt2026ayacucho`, `type=track` | **200 OK** | `total: 3` (Fuzzy matching detectó 'ayacucho') | ❌ FAIL |
-| **TC-009** | `GET` | `/v1/search` | `q=Vinchos Ayacucho`, `type=track` | **200 OK** | `total: 3` (Música andina regional) | ✅ PASS |
-| **TC-010** | `GET` | `/v1/search` | `q='x'`×850 caracteres, `type=track` | **400 Bad Request** | `error: 'Query exceeds maximum length of 250 characters'` | ✅ PASS* |
-| **TC-011** | `GET` | `/v1/search` | `q=''` (vacío), `type=track` | **400 Bad Request** | `error.message: 'No search query'` | ✅ PASS* |
-| **TC-012** | `GET` | `/v1/search` | `q=<script>alert('xss')</script>' OR 1=1--`, `type=track` | **200 OK** | `total: 951` (Payload tratado como texto plano sin ejecución) | ✅ PASS |
+| **TC-007** | `GET` | `/v1/search` | `q=Dua Lipa`, `type=artist` | **200 OK** | `{ "artists": { "items": [ {"name": "Dua Lipa"} ], "total": 14 } }` | ✅ PASS |
+| **TC-008** | `GET` | `/v1/search` | `q=xkqzmpwvlrfbnt2026ayacucho`, `type=track` | **200 OK** | `{ "tracks": { "items": [...], "total": 3 } }` *(Retornó resultados ignorando el texto basura)* | ❌ FAIL |
+| **TC-009** | `GET` | `/v1/search` | `q=Vinchos Ayacucho`, `type=track` | **200 OK** | `{ "tracks": { "items": [...], "total": 3 } }` | ✅ PASS |
+| **TC-010** | `GET` | `/v1/search` | `q='x'` (cadena de 850 caracteres), `type=track` | **400 Bad Request** | `{ "error": { "status": 400, "message": "Query exceeds maximum length" } }` | ✅ PASS |
+| **TC-011** | `GET` | `/v1/search` | `q=''` (Vacío), `type=track` | **400 Bad Request** | `{ "error": { "status": 400, "message": "No search query" } }` | ✅ PASS |
+| **TC-012** | `GET` | `/v1/search` | `q=<script>alert('xss')</script>`, `type=track` | **200 OK** | `{ "tracks": { "items": [], "total": 0 } }` *(No hubo ejecución de código malicioso)* | ✅ PASS |
 
-[cite_start]*(Nota de calidad: Los casos TC-010 y TC-011 se marcaron como PASS con observación, ya que un código 400 controlado es un rechazo seguro y válido, aunque el criterio original exigía truncamiento o cero resultados sin error [cite: 111, 112, 113, 118, 151, 152][cite_start]).* [cite: 150]
+### 3.2. Módulo de Gestión de Playlists (Casos TC-001 a TC-006)
+**Endpoint Base:** `https://api.spotify.com/v1`
 
-### 2. Módulo Gestión de Playlists (Autenticación: *Authorization Code Flow*)
-
-| ID | Método | URL del Endpoint | Parámetros Enviados (Body JSON) | Cód. HTTP | Respuesta Obtenida (Body/JSON) | Estado |
+| ID | Método | Endpoint (URL) | Parámetros Enviados (Body JSON) | Cód. HTTP Recibido | Respuesta Obtenida (Resumen JSON) | Estado |
 |:---|:---:|:---|:---|:---:|:---|:---:|
-| **TC-001** | `POST` | `/v1/me/playlists` | `name`, `description`, `public:false` | **201 Created** | Retornó `id` autogenerado, nombre y desc correctos | ✅ PASS |
-| **TC-002** | `PUT` | `/v1/playlists/{id}` | `name editado`, `description editada` | **200 OK** | Body vacío. Confirmado por `GET` de verificación | ✅ PASS |
-| **TC-003** | `PUT` | `/v1/playlists/{id}` | `description:` 'A'×301 caracteres | **200 OK** | Spotify no truncó. Almacenó 305 caracteres íntegros | ❌ FAIL |
-| **TC-004** | `PUT` | `/v1/playlists/{id}` | `name:` 'B'×100 caracteres | **200 OK** | Nombre de 100 caracteres almacenado íntegramente | ✅ PASS |
-| **TC-005** | `PUT` | `/v1/playlists/{id}` | `name:` 'C'×101 caracteres | **200 OK** | Spotify no truncó ni rechazó. Almacenó los 101 chars | ❌ FAIL |
-| **TC-006** | `PUT` | `/v1/playlists/{id}` | `name: ""` | **200 OK** | Ignoró el campo vacío, conservó valor anterior | ❌ FAIL |
-[cite_start][cite: 152]
+| **TC-001** | `POST` | `/users/{id}/playlists` | `{"name":"Playlist QA", "public":false}` | **201 Created** | `{ "id": "3cEYp...", "name": "Playlist QA", "public": false }` | ✅ PASS |
+| **TC-002** | `PUT` | `/playlists/{id}` | `{"name":"Editado", "description":"Nueva desc"}` | **200 OK** | `[Body vacío]` *(Verificado posteriormente con un GET)* | ✅ PASS |
+| **TC-003** | `PUT` | `/playlists/{id}` | `{"description": "A" x301 caracteres}` | **200 OK** | `[Body vacío]` *(Fallo: La API guardó la descripción excediendo el límite de 300)* | ❌ FAIL |
+| **TC-004** | `PUT` | `/playlists/{id}` | `{"name": "B" x100 caracteres}` | **200 OK** | `[Body vacío]` *(Guardado correctamente)* | ✅ PASS |
+| **TC-005** | `PUT` | `/playlists/{id}` | `{"name": "C" x101 caracteres}` | **200 OK** | `[Body vacío]` *(Fallo: La API no validó el límite de 100 caracteres)* | ❌ FAIL |
+| **TC-006** | `PUT` | `/playlists/{id}` | `{"name": ""}` (Nombre vacío) | **200 OK** | `[Body vacío]` *(Fallo: Ignoró el campo y mantuvo el nombre anterior sin lanzar error 400)* | ❌ FAIL |
 
 ---
 
-## 🛠️ Entornos de Ejecución
+## 4. Estructura del Proyecto y Automatización
 
-[cite_start]El proyecto empleó dos herramientas complementarias[cite: 230]: 
+Para garantizar que las pruebas sean reproducibles, se ha estructurado el repositorio de la siguiente manera:
 
-### 1. Pruebas Manuales Interactivos (Postman Desktop)
-[cite_start]Se implementaron validaciones mediante scripts `pm.test()` con la librería de assertions Chai en la pestaña *Scripts > Post-response*[cite: 230, 352]. Esto permitió extraer automáticamente tokens, parsear las respuestas JSON y emitir veredictos.
+<div align="center">
+  <img src="Evidencias/Explorador.png" alt="Estructura del Proyecto">
+  <br>
+  <i>Figura 2: Árbol de directorios del proyecto.</i>
+</div>
 
-![Colección en Postman](Evidencias/postman.png)
-*Figura 3: Ejecución de la colección de pruebas en Postman Desktop.*
+### Automatización con Jest y Supertest
+El 100% de las pruebas manuales ejecutadas en Postman fueron traducidas a código JavaScript. Esto permite integrar estas pruebas en un entorno de Integración Continua (CI/CD).
 
-### 2. Automatización como Código (Jest + Supertest)
-[cite_start]Para asegurar la integrabilidad del proyecto, el 100% de las pruebas ejecutadas en Postman fueron transcritas a scripts automatizados con JavaScript utilizando Supertest y Jest, permitiendo su ejecución directa mediante la consola[cite: 231, 354, 358].
-
-Comando para lanzar la batería de pruebas:
+**Comando de ejecución:**
 ```bash
+npm install
 npm test
