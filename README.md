@@ -3,7 +3,7 @@
   # UNIVERSIDAD NACIONAL DE SAN CRISTÓBAL DE HUAMANGA
   ### Escuela Profesional de Ingeniería de Sistemas
   
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/UNSCH_logo.svg/800px-UNSCH_logo.svg.png" width="150" alt="Logo UNSCH">
+  <img src="https://enlinea.unsch.edu.pe/identidad/" width="150" alt="Logo UNSCH">
   
   ## INFORME MONOGRÁFICO: API TESTING
   ### Laboratorio 06: Pruebas y Aseguramiento de Calidad en Spotify Web API
@@ -98,3 +98,9 @@ El 100% de las pruebas manuales ejecutadas en Postman fueron traducidas a códig
 ```bash
 npm install
 npm test
+
+<div align="center">
+  <img src="Evidencias/resultadoJest.png" alt="Resultado del Supertest">
+  <br>
+  <i>Figura 3: Resultado del SUPERTEST con Jest.</i>
+</div>
