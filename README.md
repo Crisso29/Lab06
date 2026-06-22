@@ -1,19 +1,36 @@
 <div align="center">
-  
-  # API TESTING
-  ### Laboratorio 06: Pruebas y Aseguramiento de Calidad en Spotify Web API
-  
-</div>
+
+# UNIVERSIDAD NACIONAL DE SAN CRISTÓBAL DE HUAMANGA
+### Escuela Profesional de Ingeniería de Sistemas
 
 <br>
 
-**DATOS GENERALES:**
-* **Asignatura:** IS-489 Pruebas y Aseguramiento de Calidad de Software
-* **Docente:** Ing. Lizbeth Jaico Quispe
-* **Estudiante:** Crisólogo Aguilar Flores
-* **Lugar y Fecha:** Ayacucho, Perú - Junio 2026
+# 📄 INFORME MONOGRÁFICO: API TESTING
+## Laboratorio 06: Pruebas y Aseguramiento de Calidad en Spotify Web API
+
+<br>
+
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Supertest](https://img.shields.io/badge/Supertest-000000?style=for-the-badge&logo=npm&logoColor=white)
+![Tests](https://img.shields.io/badge/TESTS-12%20PASSED%20/%20FAILED-brightgreen?style=for-the-badge)
+![Estado](https://img.shields.io/badge/ESTADO-COMPLETADO-blue?style=for-the-badge)
+
+<br><br>
+
+**ASIGNATURA:** IS-489 Pruebas y Aseguramiento de Calidad de Software <br>
+**DOCENTE:** Ing. Lizbeth Jaico Quispe <br>
+**ESTUDIANTE:** Crisólogo Aguilar Flores <br>
+**LUGAR Y FECHA:** Ayacucho, Perú - Junio 2026
+
+<br>
+
+🔗 [**Leer el Documento Completo en Google Docs**](https://docs.google.com/document/d/1X6HShgGpRAi6yqTFTRyIw7QFlIZwJ4-o/edit?usp=drive_link&ouid=102948391865322967982&rtpof=true&sd=true)
 
 ---
+
+</div>
 
 ## 📑 Índice
 1. [Resumen Ejecutivo](#1-resumen-ejecutivo)
@@ -47,7 +64,17 @@ Para el diseño de los casos de prueba, se tomó como base la documentación té
 ---
 
 ## 3. Matriz de Pruebas de Endpoints (Postman)
-A continuación, se detalla la matriz de resultados tras ejecutar las peticiones a los endpoints seleccionados. Todos los resultados fueron validados utilizando *assertions* programados en la pestaña `Tests` de Postman.
+
+Antes de la ejecución automatizada, los casos de prueba fueron diseñados, configurados y ejecutados interactivamente mediante colecciones en el workspace de Postman.
+
+<div align="center">
+  <img src="Evidencias/postman.png" alt="Colecciones en Postman">
+  <br>
+  <i>Figura 2: Estructura de la colección de pruebas en el entorno de Postman.</i>
+</div>
+<br>
+
+A continuación, se detalla la matriz de resultados tras ejecutar las peticiones a los endpoints seleccionados. Todos los resultados fueron validados utilizando *assertions* programados en la pestaña `Scripts > Post-response`.
 
 ### 3.1. Módulo de Búsqueda (Casos TC-007 a TC-012)
 **Endpoint Base:** `https://api.spotify.com/v1/search`
@@ -83,7 +110,7 @@ Para garantizar que las pruebas sean reproducibles e integrables en pipelines de
 <div align="center">
   <img src="Evidencias/Explorador.png" alt="Estructura del Proyecto">
   <br>
-  <i>Figura 2: Árbol de directorios del proyecto.</i>
+  <i>Figura 3: Árbol de directorios del proyecto.</i>
 </div>
 
 El comando `npm test` ejecuta los suites `busqueda.test.js` y `playlist.test.js`, validando los mismos doce casos documentados en la matriz contra el servidor real.
@@ -91,7 +118,7 @@ El comando `npm test` ejecuta los suites `busqueda.test.js` y `playlist.test.js`
 <div align="center">
   <img src="Evidencias/resultadoJest.png" alt="Resultado del Supertest">
   <br>
-  <i>Figura 3: Resultado de la ejecución de los tests automatizados demostrando la persistencia de los fallos identificados.</i>
+  <i>Figura 4: Resultado de la ejecución de los tests automatizados demostrando la persistencia de los fallos identificados.</i>
 </div>
 
 ---
