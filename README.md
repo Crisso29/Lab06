@@ -138,6 +138,7 @@ El presente proyecto logró integrar exitosamente los conocimientos de diseño d
 
 Los hallazgos documentados evidencian una lección valiosa para el aseguramiento de calidad: las restricciones y validaciones impuestas en las interfaces de usuario (Frontend) rara vez coinciden de manera idéntica con las implementadas en la base de datos o en el backend (API REST). La automatización dual con Postman y Supertest demostró ser un flujo de trabajo altamente eficiente para descubrir estas discrepancias, documentar la realidad y generar artefactos versionables aptos para la Integración Continua.
 
+---
 <div align="center">
 
 **IS-489 · Pruebas y Aseguramiento de Calidad de Software**
