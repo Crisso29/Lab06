@@ -137,3 +137,11 @@ Durante las pruebas se identificaron cuatro hallazgos donde el comportamiento re
 El presente proyecto logró integrar exitosamente los conocimientos de diseño de pruebas de caja negra, flujos de autenticación OAuth 2.0 y automatización de API Testing sobre un entorno empresarial real. 
 
 Los hallazgos documentados evidencian una lección valiosa para el aseguramiento de calidad: las restricciones y validaciones impuestas en las interfaces de usuario (Frontend) rara vez coinciden de manera idéntica con las implementadas en la base de datos o en el backend (API REST). La automatización dual con Postman y Supertest demostró ser un flujo de trabajo altamente eficiente para descubrir estas discrepancias, documentar la realidad y generar artefactos versionables aptos para la Integración Continua.
+
+<div align="center">
+
+**IS-489 · Pruebas y Aseguramiento de Calidad de Software**
+UNSCH · Facultad de Ingeniería · Semestre 2026-I
+Aguilar Flores, Crisólogo · Serie 400
+
+</div>
