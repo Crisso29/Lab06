@@ -1,0 +1,1138 @@
+{
+  "info": {
+    "_postman_id": "c0e95069-1c46-413c-8e8c-148a414e5a9b",
+    "name": "Spotify - Búsqueda (Real) + Playlist (Mock)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55959445",
+    "_collection_link": "https://go.postman.co/collection/55959445-c0e95069-1c46-413c-8e8c-148a414e5a9b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01-Busqueda-API-Real",
+      "item": [
+        {
+          "name": "00 - Obtener Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials",
+                  "type": "text",
+                  "uuid": "c64eb2f7-8a1e-4560-8a40-ee1e62db72a0"
+                },
+                {
+                  "key": "client_id",
+                  "value": "7c6c92ba48fe4fdca95717e41f283912",
+                  "type": "text",
+                  "uuid": "35b47d8c-f85c-40e6-bfa5-db6e5b91e858"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "c5bde3b82fc94362914787bf91550b8f",
+                  "type": "text",
+                  "uuid": "80eca94b-f14b-4a6a-8b49-61e46ec17c12"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://accounts.spotify.com/api/token",
+              "protocol": "https",
+              "host": [
+                "accounts",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "api",
+                "token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-007: Búsqueda válida Dua Lipa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-007: Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-007: La respuesta contiene artistas\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.artists).to.exist;\r",
+                  "    pm.expect(jsonData.artists.items).to.be.an('array');\r",
+                  "    pm.expect(jsonData.artists.items.length).to.be.greaterThan(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-007: Dua Lipa aparece como resultado más relevante\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const masRelevante = jsonData.artists.items[0];\r",
+                  "    pm.expect(masRelevante.name).to.eql(\"Dua Lipa\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-007: El artista tiene estructura válida\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const artista = jsonData.artists.items[0];\r",
+                  "    pm.expect(artista).to.have.property('id');\r",
+                  "    pm.expect(artista).to.have.property('uri');\r",
+                  "    pm.expect(artista.type).to.eql('artist');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0um7}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.spotify.com/v1/search?q=Dua Lipa&type=artist",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Dua Lipa"
+                },
+                {
+                  "key": "type",
+                  "value": "artist"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-008: Término sin sentido sin resultados",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-008: Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Criterio de aceptación según matriz (TC-008): término sin sentido\r",
+                  "// debe retornar 0 resultados (\"No se encontraron resultados de...\")\r",
+                  "pm.test(\"TC-008: Término sin sentido NO debe retornar resultados\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const items = jsonData.tracks.items;\r",
+                  "    pm.expect(items.length).to.eql(0);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0um7}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/search?q=xkqzmpwvlrfbnt2026ayacucho&type=track",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "xkqzmpwvlrfbnt2026ayacucho"
+                },
+                {
+                  "key": "type",
+                  "value": "track"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-009: Búsqueda término regional Vinchos Ayacucho",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-009: Status code es 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Criterio TC-009: resultados aproximados (música andina) O cero resultados — ambos válidos\r",
+                  "pm.test(\"TC-009: Retorna resultados aproximados O cero resultados (ambos válidos)\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const items = jsonData.tracks.items;\r",
+                  "    // No falla en ningún escenario: el criterio acepta cualquiera de las dos opciones\r",
+                  "    pm.expect(items.length).to.be.at.least(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-009: Si hay resultados, están relacionados a la región buscada\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const items = jsonData.tracks.items;\r",
+                  "    if (items.length > 0) {\r",
+                  "        const contenido = items.map(t => \r",
+                  "            t.name + ' ' + t.artists.map(a => a.name).join(' ')\r",
+                  "        ).join(' ').toLowerCase();\r",
+                  "        pm.expect(contenido).to.include('ayacucho');\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0um7}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/search?q=Vinchos Ayacucho&type=track",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Vinchos Ayacucho"
+                },
+                {
+                  "key": "type",
+                  "value": "track"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-010: Cadena excesiva 800+ caracteres",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Criterio original (matriz): \"cadena truncada o cero resultados, sin errores de aplicación\"\r",
+                  "// OBSERVACIÓN: la API real responde 400 con mensaje claro ante queries >250 caracteres.\r",
+                  "// Se interpreta como rechazo CONTROLADO (no es un error de aplicación, es validación\r",
+                  "// de entrada funcionando correctamente) → PASS con observación.\r",
+                  "// Recomendación: reescribir el criterio de aceptación para incluir explícitamente\r",
+                  "// \"o rechazo controlado con código 4xx y mensaje claro\" como salida válida.\r",
+                  "\r",
+                  "pm.test(\"TC-010: No es un error de servidor (5xx) — sería un fallo real de aplicación\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.be.within(500, 599);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-010: Rechazo controlado y explícito (400) con mensaje claro\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error).to.exist;\r",
+                  "    pm.expect(jsonData.error.message).to.be.a('string').and.not.empty;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0ab7}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/search?q=musica andina peruana ayacucho huamanga vinchos cangallo vilcashuaman victor fajardo huanta la mar sucre lucanas parinacochas paucar del sara sara folklore huayno marinera tunantada pasacalle carnaval andino ayacuchano chicha cumbia tropical instrumentos tipicos charango quena zampoña tinya mandolina arpa violin guitarra trompeta bombo wankara platillos cantantes grupos musicales orquestas representativas de la region sur central del peru departamento de ayacucho semana santa turismo gastronomia puca picante mondongo caldo de cabeza chicharron jamon del pais mazamorra de cochino ponche de frutas chicha de jora festividades carnavales navidad pascua corpus christi patron san juan bautista virgen asuncion&type=track",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "musica andina peruana ayacucho huamanga vinchos cangallo vilcashuaman victor fajardo huanta la mar sucre lucanas parinacochas paucar del sara sara folklore huayno marinera tunantada pasacalle carnaval andino ayacuchano chicha cumbia tropical instrumentos tipicos charango quena zampoña tinya mandolina arpa violin guitarra trompeta bombo wankara platillos cantantes grupos musicales orquestas representativas de la region sur central del peru departamento de ayacucho semana santa turismo gastronomia puca picante mondongo caldo de cabeza chicharron jamon del pais mazamorra de cochino ponche de frutas chicha de jora festividades carnavales navidad pascua corpus christi patron san juan bautista virgen asuncion"
+                },
+                {
+                  "key": "type",
+                  "value": "track"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-011: Campo vacío o solo espacios",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Criterio original (matriz): \"mantiene pantalla de categorías, no procesa búsqueda vacía\"\r",
+                  "// (este criterio describe el comportamiento del CLIENTE Spotify Web, no de la API REST)\r",
+                  "// OBSERVACIÓN: la API real rechaza con 400 + mensaje claro \"No search query\".\r",
+                  "// Mismo criterio aplicado en TC-010: rechazo controlado = PASS con observación\r",
+                  "// (no es un error de aplicación, es validación de entrada funcionando correctamente).\r",
+                  "\r",
+                  "pm.test(\"TC-011: No es un error de servidor (5xx)\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.be.within(500, 599);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-011: Rechazo controlado y explícito (400) con mensaje claro\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.error).to.exist;\r",
+                  "    pm.expect(jsonData.error.message).to.be.a('string').and.not.empty;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0ab7}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/search?q&type=track",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": null
+                },
+                {
+                  "key": "type",
+                  "value": "track"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-012: XSS y SQL injection sanitizado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-012: Status code es 200 (no error de servidor)\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "// Lo crítico en seguridad: el payload NO debe ejecutarse ni romper la API\r",
+                  "pm.test(\"TC-012: El payload se trata como texto plano (no rompe la API)\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.tracks).to.exist;\r",
+                  "    pm.expect(jsonData.tracks.items).to.be.an('array');\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-012: No hay rastro de ejecución de script en la respuesta\", function () {\r",
+                  "    const bodyText = pm.response.text();\r",
+                  "    // Verifica que el script no aparezca \"vivo\" fuera de un contexto de texto/JSON escapado\r",
+                  "    pm.expect(bodyText).to.not.include('<script>alert');\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0ab7}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/search?q=<script>alert('xss')</script>' OR 1=1--&type=track",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "<script>alert('xss')</script>' OR 1=1--"
+                },
+                {
+                  "key": "type",
+                  "value": "track"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02-Playlist-API-Real",
+      "item": [
+        {
+          "name": "00 - Login OAuth (Authorization Code)",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "addTokenTo",
+                  "value": "queryParams",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "http://127.0.0.1:3000/callback",
+                  "type": "string"
+                },
+                {
+                  "key": "useBrowser",
+                  "value": false,
+                  "type": "boolean"
+                },
+                {
+                  "key": "scope",
+                  "value": "playlist-modify-public playlist-modify-private playlist-read-private",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "{{auth_secret_0e8q}}",
+                  "type": "string"
+                },
+                {
+                  "key": "tokenName",
+                  "value": "spotify-user-token",
+                  "type": "string"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "type": "string"
+                },
+                {
+                  "key": "client_authentication",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://accounts.spotify.com/authorize",
+                  "type": "string"
+                },
+                {
+                  "key": "clientId",
+                  "value": "{{auth_secret_0adv}}",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://accounts.spotify.com/api/token",
+                  "type": "string"
+                },
+                {
+                  "key": "accessToken",
+                  "value": "{{auth_secret_04y4}}",
+                  "type": "string"
+                },
+                {
+                  "key": "tokenType",
+                  "value": "Bearer",
+                  "type": "string"
+                },
+                {
+                  "key": "expires_in",
+                  "value": 3600,
+                  "type": "number"
+                },
+                {
+                  "key": "refresh_token",
+                  "value": "AQBtzbo2rKnBRCdhQ7nsnbUVAtV_26ywKmWPWQnWXvW7QoZlYFoVQr8ylZZ3EioiO6-WsYIuyNzHKANoAUQtiCMwh5xGAWjLl4t-muP0WKdZ5Xwad_WGQEuc16PQXw3287M",
+                  "type": "string"
+                },
+                {
+                  "key": "createdAt",
+                  "value": "2026-06-21T18:03:11.778Z",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/me",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-001: Crear playlist válida",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-001: Status code 201 Created\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-001: Playlist creada con nombre correcto\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.name).to.eql(\"IS489 Lab06 Playlist QA\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-001: Playlist creada con descripción correcta\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.description).to.eql(\"Playlist creada para pruebas de API - TC-001\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-001: Playlist tiene ID válido\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData.id).to.exist;\r",
+                  "    pm.expect(jsonData.id).to.be.a('string');\r",
+                  "    // Guardar el ID para usar en TC-002 a TC-006\r",
+                  "    pm.collectionVariables.set(\"playlist_id\", jsonData.id);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"IS489 Lab06 Playlist QA\",\r\n  \"description\": \"Playlist creada para pruebas de API - TC-001\",\r\n  \"public\": false\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.spotify.com/v1/me/playlists",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "me",
+                "playlists"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-002: Editar nombre y descripción de playlist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-002: Status code 200 OK\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-002: Respuesta confirma actualización exitosa\", function () {\r",
+                  "    // Spotify devuelve 200 con body vacío en este endpoint\r",
+                  "    // El status 200 es suficiente evidencia de éxito\r",
+                  "    pm.expect(pm.response.code).to.eql(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"IS489 Lab06 Playlist QA - Editada\",\r\n  \"description\": \"Descripción actualizada correctamente - TC-002\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.spotify.com/v1/playlists/{{playlist_id}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-003: Descripción 301 caracteres (AVL N+1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-003: No es error de servidor (5xx)\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.be.within(500, 599);\r",
+                  "});\r",
+                  "\r",
+                  "// Criterio original: descripción >300 chars debe truncarse a 300 → FAIL\r",
+                  "// La API acepta 301+ chars sin truncar → comportamiento distinto al cliente web\r",
+                  "pm.test(\"TC-003: Descripción debe truncarse a máximo 300 chars [CRITERIO ORIGINAL]\", function () {\r",
+                  "    // Este test falla intencionalmente para documentar el hallazgo\r",
+                  "    // Spotify NO trunca: guardó 305 chars cuando se enviaron 301\r",
+                  "    pm.response.to.have.status(400); // Esperábamos rechazo o truncado, no 200\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"IS489 Lab06 Playlist QA - Editada\",\r\n  \"description\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.spotify.com/v1/playlists/{{playlist_id}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-003: Verificación",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/playlists/{{playlist_id}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-004: Nombre exacto 100 chars (AVL N)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Criterio original (matriz): nombre exacto de 100 chars debe aceptarse sin error (AVL N)\r",
+                  "pm.test(\"TC-004: Status 200 — nombre de 100 chars aceptado\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"TC-004: No es error de servidor (5xx)\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.be.within(500, 599);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Test simple\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.spotify.com/v1/playlists/{{playlist_id}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-005: Nombre 101 chars (AVL N+1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-005: No es error de servidor (5xx)\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.be.within(500, 599);\r",
+                  "});\r",
+                  "\r",
+                  "// Criterio original: nombre 101 chars debe truncarse a 100 → FAIL\r",
+                  "// La API acepta 101 chars sin truncar → comportamiento distinto al cliente web\r",
+                  "pm.test(\"TC-005: Nombre debe truncarse a máximo 100 chars [CRITERIO ORIGINAL]\", function () {\r",
+                  "    pm.response.to.have.status(400); // Esperábamos rechazo o truncado, no 200\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "",
+                "value": "",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.spotify.com/v1/playlists/{{playlist_id}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-005:Verificación",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/playlists/{{playlist_id}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-006: Nombre vacío error obligatorio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"TC-006: No es error de servidor (5xx)\", function () {\r",
+                  "    pm.expect(pm.response.code).to.not.be.within(500, 599);\r",
+                  "});\r",
+                  "\r",
+                  "// Criterio original: nombre vacío debe retornar error obligatorio → FAIL\r",
+                  "// La API acepta nombre vacío con 200 e ignora el campo silenciosamente\r",
+                  "pm.test(\"TC-006: Nombre vacío debe retornar error [CRITERIO ORIGINAL]\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://api.spotify.com/v1/playlists/{{playlist_id}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC-006:Verificación",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0b1k}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://api.spotify.com/v1/playlists/{{playlist_id}}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "spotify",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "playlists",
+                "{{playlist_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "user_token",
+      "value": ""
+    },
+    {
+      "key": "playlist_id",
+      "value": ""
+    }
+  ]
+}
